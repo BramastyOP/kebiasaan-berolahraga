@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Festival Olahraga · 7KAIH</title>
+<style>
+:root{--bg:#fff6ec;--cd:#fff;--tx:#2a1d12;--mu:#7a6552;--ac:#f26a21;--ax:#fff;--bd:#f0d9c4;--ok:#2f9e5b;--ar:#dff3ff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#1d140d;--cd:#2a1d12;--tx:#fbeee0;--mu:#c0a58d;--ac:#ff8a4a;--ax:#2a1200;--bd:#4a3524;--ok:#4cc17f;--ar:#1d3a52}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1d140d;--cd:#2a1d12;--tx:#fbeee0;--mu:#c0a58d;--ac:#ff8a4a;--ax:#2a1200;--bd:#4a3524;--ok:#4cc17f;--ar:#1d3a52}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;padding:14px}
+.app{width:100%;max-width:560px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+h1{font-size:21px;margin:0}
+#tt{background:var(--ac);color:var(--ax);font-weight:700;font-size:13px;padding:5px 11px;border-radius:99px;white-space:nowrap}
+.sub{color:var(--mu);font-size:14px;margin:0 0 12px}
+h2{font-size:19px;margin:6px 0 8px}
+.hint{color:var(--mu);font-size:14px;margin:4px 0 8px}
+button{font:inherit;color:var(--tx);background:var(--cd);border:2px solid var(--bd);border-radius:14px;padding:12px 16px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+button:active{transform:scale(.97)}
+.go{background:var(--ac);color:var(--ax);border-color:var(--ac);font-weight:700}
+.grid,.lvs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.lvs{grid-template-columns:repeat(3,1fr)}
+.card{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:16px 10px}
+.card .em{font-size:38px}
+.card small{color:var(--mu);font-size:12px}
+.card i{font-style:normal;font-size:13px;color:var(--ac);font-weight:600}
+.hud{display:flex;justify-content:space-between;font-weight:700;margin:6px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.two button{padding:22px 8px;font-size:18px;font-weight:700}
+.track{position:relative;height:56px;background:var(--bd);border-radius:28px;margin:18px 0}
+#r{position:absolute;left:0;top:8px;font-size:32px;transition:left .1s}
+.track b{position:absolute;right:12px;top:10px;font-size:30px}
+.bar{position:relative;height:44px;background:var(--bd);border-radius:10px;margin:26px 0}
+#z{position:absolute;top:0;bottom:0;background:var(--ok);opacity:.85;border-radius:8px}
+#m{position:absolute;top:-8px;bottom:-8px;width:6px;margin-left:-3px;background:var(--tx);border-radius:3px}
+#sh{width:100%;padding:20px;font-size:20px}
+.sim{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sim button{font-size:46px;padding:22px}
+.sim button.lit{background:var(--ac);border-color:var(--ac);transform:scale(.95)}
+.arena{position:relative;height:280px;background:var(--ar);border-radius:14px;overflow:hidden;touch-action:none;margin:8px 0}
+.arena span{position:absolute;font-size:30px;line-height:1;transform:translateX(-50%)}
+#pl{bottom:6px}
+.res{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding:12px 0}
+.res .big{font-size:64px}
+.res h2{margin:0}
+.res p{margin:0;color:var(--mu);max-width:380px}
+.res .st{font-size:30px}
+.res button{width:100%;max-width:300px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header><h1>🏅 Festival Olahraga</h1><span id="tt"></span></header>
+  <p class="sub">7KAIH · Berolahraga — kumpulkan bintang di tiap permainan!</p>
+  <div id="st"></div>
+</div>
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)},st=$('#st'),offs=[];
+var save={};try{save=JSON.parse(localStorage.getItem('k7oga')||'{}')}catch(e){}
+function put(){try{localStorage.setItem('k7oga',JSON.stringify(save))}catch(e){}}
+var LVN=['Mudah','Sedang','Sulit'];
+function cleanup(){offs.splice(0).forEach(function(f){f()})}
+function lis(t,e,f){t.addEventListener(e,f);offs.push(function(){t.removeEventListener(e,f)})}
+function every(f,ms){var i=setInterval(f,ms);offs.push(function(){clearInterval(i)})}
+function after(f,ms){var i=setTimeout(f,ms);offs.push(function(){clearTimeout(i)})}
+function frame(f){var on=1,p=performance.now();function l(t){if(!on)return;f(Math.min(50,t-p));p=t;requestAnimationFrame(l)}requestAnimationFrame(l);offs.push(function(){on=0})}
+function view(h){cleanup();st.innerHTML=h}
+function hearts(n){return '❤️'.repeat(n)+'🤍'.repeat(3-n)}
+function tot(){var s=0;for(var k in save)s+=save[k];$('#tt').textContent='⭐ '+s+'/36'}
+
+var G=[
+{id:'sprint',e:'🏃',n:'Lari Cepat',d:'Ketuk kiri-kanan',h:'Ketuk tombol Kiri dan Kanan bergantian secepat mungkin sebelum waktu habis (8 detik).',lv:['30 langkah','40 langkah','50 langkah'],
+run:function(l,fin){
+  var need=[30,40,50][l],T=8000,n=0,last='',t0=performance.now(),over=0;
+  st.innerHTML='<div class="hud"><span id="a">0/'+need+'</span><span id="t">8.0 dtk</span></div><div class="track"><span id="r">🏃</span><b>🏁</b></div><div class="two"><button id="L">👟 Kiri</button><button id="R">👟 Kanan</button></div>';
+  function step(s){if(over||s===last)return;last=s;n++;$('#a').textContent=n+'/'+need;$('#r').style.left=(n/need*84)+'%';
+    if(n>=need){over=1;var left=T-(performance.now()-t0);fin(left>3000?3:left>1500?2:1)}}
+  every(function(){var left=T-(performance.now()-t0);$('#t').textContent=Math.max(0,left/1000).toFixed(1)+' dtk';if(left<=0&&!over){over=1;fin(0)}},100);
+  ['L','R'].forEach(function(k){lis($('#'+k),'pointerdown',function(e){e.preventDefault();step(k)})});
+  lis(document,'keydown',function(e){if(e.code==='ArrowLeft'||e.code==='KeyA')step('L');if(e.code==='ArrowRight'||e.code==='KeyD')step('R')});
+}},
+{id:'basket',e:'🏀',n:'Basket Tepat',d:'Tembak di zona hijau',h:'Tekan Tembak saat penanda berada di zona hijau. Ada 5 tembakan, minimal 3 masuk untuk menang.',lv:['Zona lebar','Zona sedang','Zona sempit'],
+run:function(l,fin){
+  var w=[30,20,12][l],sp=[1,1.4,2][l],shot=0,hit=0,ph=0,pos=0,busy=0,zl=0,res='';
+  st.innerHTML='<div class="hud"><span id="a">Tembakan 1/5</span><span id="lg"></span></div><div class="bar"><div id="z"></div><div id="m"></div></div><button class="go" id="sh">🏀 Tembak!</button>';
+  function nz(){zl=8+Math.random()*(84-w);$('#z').style.cssText='left:'+zl+'%;width:'+w+'%'}nz();
+  frame(function(dt){if(busy)return;ph+=dt*sp/1000;var p=ph%2;pos=(p<1?p:2-p)*100;$('#m').style.left=pos+'%'});
+  function sh(){if(busy)return;busy=1;var ok=pos>=zl&&pos<=zl+w;shot++;if(ok)hit++;res+=ok?'✅':'❌';
+    $('#lg').textContent=res;$('#a').textContent=ok?'Masuk! 🎉':'Meleset…';
+    after(function(){if(shot>=5)fin(hit>=5?3:hit>=4?2:hit>=3?1:0);else{$('#a').textContent='Tembakan '+(shot+1)+'/5';nz();busy=0}},800)}
+  lis($('#sh'),'pointerdown',function(e){e.preventDefault();sh()});
+  lis(document,'keydown',function(e){if(e.code==='Space'){e.preventDefault();sh()}});
+}},
+{id:'senam',e:'🤸',n:'Senam Ingat',d:'Ulangi urutan gerakan',h:'Perhatikan urutan gerakan yang menyala, lalu ulangi dengan urutan yang sama. Kamu punya 3 nyawa.',lv:['4 ronde','6 ronde','8 ronde'],
+run:function(l,fin){
+  var M=['🤸','🏃','🏊','🚴'],tgt=[4,6,8][l],ms=[800,600,430][l],seq=[],i=0,lives=3,show=1,len=2;
+  st.innerHTML='<div class="hud"><span id="a"></span><span id="h">'+hearts(3)+'</span></div><div class="sim">'+M.map(function(m){return '<button data-m="'+m+'">'+m+'</button>'}).join('')+'</div>';
+  var bt=[].slice.call(st.querySelectorAll('.sim button'));
+  function say(t){$('#a').textContent=t}
+  function lit(m){var b=bt.filter(function(x){return x.dataset.m===m})[0];b.classList.add('lit');after(function(){b.classList.remove('lit')},ms*0.6)}
+  function play(){show=1;i=0;say('Ronde '+(len-1)+'/'+tgt+' · Perhatikan…');
+    while(seq.length<len)seq.push(M[Math.random()*4|0]);
+    seq.forEach(function(m,k){after(function(){lit(m)},600+k*ms)});
+    after(function(){show=0;say('Ronde '+(len-1)+'/'+tgt+' · Giliranmu!')},600+seq.length*ms)}
+  bt.forEach(function(b){lis(b,'pointerdown',function(e){
+    e.preventDefault();if(show)return;var m=b.dataset.m;lit(m);
+    if(m!==seq[i]){lives--;$('#h').textContent=hearts(lives);if(lives<=0){fin(0);return}show=1;say('Salah! Ulangi lagi…');after(play,1000)}
+    else if(++i>=seq.length){if(len-1>=tgt){fin(lives);return}len++;show=1;say('Benar! 👏');after(play,1000)}
+  })});
+  play();
+}},
+{id:'tangkap',e:'🧺',n:'Tangkap Sehat',d:'Tangkap bola, hindari junk food',h:'Geser keranjang untuk menangkap perlengkapan olahraga dan air putih. Hindari makanan manis dan gorengan! Salah tangkap = nyawa berkurang.',lv:['10 tangkapan','15 tangkapan','20 tangkapan'],
+run:function(l,fin){
+  var tgt=[10,15,20][l],sp=[0.12,0.17,0.23][l],jp=[0.25,0.35,0.45][l],gap=[1000,800,650][l];
+  st.innerHTML='<div class="hud"><span id="a">0/'+tgt+'</span><span id="h">'+hearts(3)+'</span></div><div class="arena" id="ar"><span id="pl">🧺</span></div><div class="two"><button id="L">⬅</button><button id="R">➡</button></div><p class="hint">Tangkap ⚽🏀🏐💧 — hindari 🍔🍟🍬</p>';
+  var ar=$('#ar'),pl=$('#pl'),px=0.5,got=0,lives=3,it=[],dir=0,GD=['⚽','🏀','🏐','💧'],BD=['🍔','🍟','🍬'];
+  function cl(v){return Math.min(0.94,Math.max(0.06,v))}
+  every(function(){var bad=Math.random()<jp,e=document.createElement('span'),a=bad?BD:GD,x=0.08+Math.random()*0.84;
+    e.textContent=a[Math.random()*a.length|0];e.style.left=x*100+'%';e.style.top='-30px';ar.appendChild(e);it.push({e:e,x:x,y:-30,bad:bad})},gap);
+  lis(ar,'pointermove',function(e){var r=ar.getBoundingClientRect();px=cl((e.clientX-r.left)/r.width)});
+  ['L','R'].forEach(function(k,j){var b=$('#'+k);lis(b,'pointerdown',function(e){e.preventDefault();dir=j?1:-1});
+    ['pointerup','pointerleave','pointercancel'].forEach(function(n){lis(b,n,function(){dir=0})})});
+  lis(document,'keydown',function(e){if(e.code==='ArrowLeft'||e.code==='KeyA')dir=-1;if(e.code==='ArrowRight'||e.code==='KeyD')dir=1});
+  lis(document,'keyup',function(e){if(['ArrowLeft','ArrowRight','KeyA','KeyD'].indexOf(e.code)>-1)dir=0});
+  frame(function(dt){px=cl(px+dir*dt*0.0007);pl.style.left=px*100+'%';var H=ar.clientHeight;
+    it=it.filter(function(o){o.y+=sp*dt;o.e.style.top=o.y+'px';
+      if(o.y>H-44&&Math.abs(o.x-px)<0.1){o.e.remove();
+        if(o.bad){lives--;$('#h').textContent=hearts(lives);if(lives<=0)fin(0)}
+        else{got++;$('#a').textContent=got+'/'+tgt;if(got>=tgt)fin(lives)}
+        return false}
+      if(o.y>H){o.e.remove();return false}return true})});
+}}
+];
+
+function menu(){
+  view('<h2>Pilih permainan</h2><div class="grid">'+G.map(function(g){
+    var s=0;for(var l=0;l<3;l++)s+=save[g.id+l]||0;
+    return '<button class="card" data-g="'+g.id+'"><span class="em">'+g.e+'</span><b>'+g.n+'</b><small>'+g.d+'</small><i>⭐ '+s+'/9</i></button>'}).join('')+'</div>');
+  [].forEach.call(st.querySelectorAll('.card'),function(b){b.onclick=function(){levels(b.dataset.g)}});
+  tot();
+}
+function levels(id){
+  var g=G.filter(function(x){return x.id===id})[0];
+  view('<h2>'+g.e+' '+g.n+'</h2><p class="hint">'+g.h+'</p><div class="lvs">'+LVN.map(function(n,l){
+    var s=save[id+l]||0;return '<button class="card" data-l="'+l+'"><b>'+n+'</b><small>'+g.lv[l]+'</small><i>'+(s?'⭐'.repeat(s):'☆')+'</i></button>'}).join('')+'</div><button id="bk">← Kembali</button>');
+  [].forEach.call(st.querySelectorAll('.card'),function(b){b.onclick=function(){play(g,+b.dataset.l)}});
+  $('#bk').onclick=menu;
+}
+function play(g,l){
+  view('');var ended=0;
+  g.run(l,function(s){if(ended)return;ended=1;result(g,l,s)});
+}
+function result(g,l,s){
+  var k=g.id+l;if((save[k]||0)<s){save[k]=s;put()}
+  view('<div class="res"><div class="big">'+(s?'🏅':'💪')+'</div><h2>'+(s?'Hebat! Level '+LVN[l]+' selesai':'Belum berhasil')+'</h2><div class="st">'+(s?'⭐'.repeat(s):'—')+'</div><p>'+(s?'Olahraga rutin membuat badan sehat dan semangat belajar.':'Tidak apa-apa, coba lagi. Olahraga itu soal latihan dan tidak menyerah.')+'</p><button class="go" id="ag">Main lagi</button><button id="lv">Pilih level</button><button id="mn">Menu utama</button></div>');
+  $('#ag').onclick=function(){play(g,l)};$('#lv').onclick=function(){levels(g.id)};$('#mn').onclick=menu;
+  tot();
+}
+menu();
+})();
+</script>
+</body>
+</html>
